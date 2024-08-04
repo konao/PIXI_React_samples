@@ -1,8 +1,3 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import './App.css'
-
 import { Counter } from "./counter/counter"
 
 import './App.css';
@@ -11,16 +6,38 @@ import { useMemo } from 'react';
 import { BlurFilter, TextStyle } from 'pixi.js';
 import { Stage, Container, Sprite, Text } from '@pixi/react';
 
+import { useSelector } from 'react-redux'
+
 const App = () => {
   const blurFilter = useMemo(() => new BlurFilter(2), []);
   const bunnyUrl = 'https://pixijs.io/pixi-react/img/bunny.png';
+
+  // stateの値を取り出す
+  const count = useSelector((state) => state.counter.value)
+
+  // x座標の配列を作成
+  let xList = Array(count);
+  if (count > 0) {
+    if (count === 1) {
+      xList[0] = 400;
+    } else {
+      for (let i = 0; i < count; i++) {
+        xList[i] = i * 700 / (count - 1) + 50;
+      }
+    }
+  }
+  console.log(xList);
+
   return (
     <>
       <Counter />
       <Stage width={800} height={600} options={{ background: 0x1099bb }}>
-        <Sprite image={bunnyUrl} x={300} y={150} />
-        <Sprite image={bunnyUrl} x={500} y={150} />
-        <Sprite image={bunnyUrl} x={400} y={200} />
+        {
+          // 可変個のスプライトを生成
+          xList.map((x) => {
+            return <Sprite image={bunnyUrl} x={x} y={150} />
+          })
+        }
 
         <Container x={200} y={200}>
           <Text
@@ -48,34 +65,3 @@ const App = () => {
 };
 
 export default App;
-// function App() {
-//   const [count, setCount] = useState(0)
-
-//   return (
-//     <>
-//       <Counter />
-//       <div>
-//         <a href="https://vitejs.dev" target="_blank">
-//           <img src={viteLogo} className="logo" alt="Vite logo" />
-//         </a>
-//         <a href="https://react.dev" target="_blank">
-//           <img src={reactLogo} className="logo react" alt="React logo" />
-//         </a>
-//       </div>
-//       <h1>Vite + React</h1>
-//       <div className="card">
-//         <button onClick={() => setCount((count) => count + 1)}>
-//           count is {count}
-//         </button>
-//         <p>
-//           Edit <code>src/App.jsx</code> and save to test HMR
-//         </p>
-//       </div>
-//       <p className="read-the-docs">
-//         Click on the Vite and React logos to learn more
-//       </p>
-//     </>
-//   )
-// }
-
-// export default App
